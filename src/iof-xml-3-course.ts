@@ -1,4 +1,4 @@
-import type { Control } from "./models/control.ts";
+import type { ControlPoint } from "./models/control-point.ts";
 import type { Leg } from "./models/leg.ts";
 import { distanceBetweenTwoGPSPoints } from "./utils.ts";
 
@@ -14,7 +14,7 @@ import { distanceBetweenTwoGPSPoints } from "./utils.ts";
 export function parseIOFXML3CourseExport(
   courseXmlDoc: XMLDocument,
   classIndex: number
-): [Control[], Leg[]] {
+): [ControlPoint[], Leg[]] {
   const courseDataTag = courseXmlDoc.querySelector("CourseData");
 
   if (courseDataTag === null)
@@ -67,7 +67,7 @@ export function parseIOFXML3CourseExport(
   if (course === undefined)
     throw new Error("No class matching the class index.");
 
-  const controls: Control[] = Array.from(
+  const controls: ControlPoint[] = Array.from(
     course.querySelectorAll("CourseControl")
   ).map((control) => {
     const controlTag = control.querySelector("Control");

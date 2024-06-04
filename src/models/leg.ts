@@ -1,5 +1,8 @@
 import type { Routechoice } from "./routechoice.ts";
 
+/**
+ * An orienteering course leg
+ */
 export type Leg = {
   startControlCode: string;
   finishControlCode: string;
