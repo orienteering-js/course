@@ -1,0 +1,9 @@
+{
+  "name": "@orienteering-js/course",
+  "version": "0.1.0",
+  "exports": "./src/mod.ts",
+  "compilerOptions": {
+    "lib": ["deno.ns", "dom"],
+    "verbatimModuleSyntax": true
+  }
+}
