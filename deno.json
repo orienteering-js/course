@@ -1,9 +1,13 @@
 {
   "name": "@orienteering-js/course",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "exports": "./src/mod.ts",
   "compilerOptions": {
     "lib": ["deno.ns", "dom"],
     "verbatimModuleSyntax": true
+  },
+  "imports": {
+    "@orienteering-js/map": "jsr:@orienteering-js/map@^0.1.0",
+    "zod": "npm:zod@^3.23.8"
   }
 }
