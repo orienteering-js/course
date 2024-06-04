@@ -1,9 +1,36 @@
 import { z } from "zod";
 
 /**
+ * A 2D Rerun routechoice
+ */
+export type TwoDRerunTag = {
+  type: string;
+  opened_dialog: number;
+  ready_for_dialog: number;
+  runnername: string;
+  points: string[];
+  pointsxy: string[];
+  currenttime: number;
+  currentalt: number;
+  totalup: number;
+  show: number;
+  offsettxt_x: number;
+  offsettxt_y: number;
+  offsettxt_basex: number;
+  offsettxt_basey: number;
+  group: number;
+  x: number;
+  y: number;
+  length: number;
+  name: string;
+  description: string;
+  color: string;
+};
+
+/**
  * A zod schema for a 2D Rerun routechoice
  */
-export const twoDRerunTagSchema = z.object({
+export const twoDRerunTagSchema: z.ZodType<TwoDRerunTag> = z.object({
   type: z.string(),
   opened_dialog: z.number(),
   ready_for_dialog: z.number(),
@@ -28,20 +55,20 @@ export const twoDRerunTagSchema = z.object({
 });
 
 /**
- * A 2D Rerun routechoice
+ * A 2D Rerun json export object
  */
-export type TwoDRerunTag = z.infer<typeof twoDRerunTagSchema>;
+export type TwoDRerunCourseExport = {
+  tags: TwoDRerunTag[];
+  coursecoords: string[];
+  otechinfo: Record<string, any>;
+};
 
 /**
  * A zod schema for a 2D Rerun json export object
  */
-export const twoDRerunCourseExportSchema = z.object({
-  tags: z.array(twoDRerunTagSchema),
-  coursecoords: z.array(z.string()),
-  otechinfo: z.object({}),
-});
-
-/**
- * A 2D Rerun json export object
- */
-export type TwoDRerunCourseExport = z.infer<typeof twoDRerunCourseExportSchema>;
+export const twoDRerunCourseExportSchema: z.ZodType<TwoDRerunCourseExport> =
+  z.object({
+    tags: z.array(twoDRerunTagSchema),
+    coursecoords: z.array(z.string()),
+    otechinfo: z.object({}),
+  });
