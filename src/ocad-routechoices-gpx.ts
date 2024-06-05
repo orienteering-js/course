@@ -28,7 +28,7 @@ export function parseGPXRoutechoicesOCADExport(
   const rawRoutechoices: RawRoutechoice[] = Array.from(
     routechoicesXmlDoc.querySelectorAll("trk")
   ).map((trk) => {
-    const elevations: number[] = [];
+    const elevations: (number | null)[] = [];
     const rawPoints: [number, number][] = [];
     const trackPoints = trk.querySelectorAll("trkpt");
 
@@ -48,7 +48,7 @@ export function parseGPXRoutechoicesOCADExport(
         );
 
       const elevation = getElevationFromTrkpt(trkpt);
-      if (elevation !== null) elevations.push(elevation);
+      elevations.push(elevation);
 
       rawPoints.push([lat, lon]);
     }
@@ -58,7 +58,7 @@ export function parseGPXRoutechoicesOCADExport(
     return {
       rawPoints,
       pointsString,
-      elevations: elevations.length !== 0 ? elevations : null,
+      elevations,
     };
   });
 
@@ -75,8 +75,7 @@ export function parseGPXRoutechoicesOCADExport(
   });
 
   filteredRawRoutechoices.forEach((rc) => {
-    const elevation =
-      rc.elevations === null ? null : getTotalPositiveElevation(rc.elevations);
+    const elevation = getTotalPositiveElevation(rc.elevations);
 
     const length = getLineStringLength(rc.rawPoints);
     let attributedLegIndex = 0;
@@ -147,6 +146,6 @@ function getElevationFromTrkpt(trkpt: Element): number | null {
 
 interface RawRoutechoice {
   rawPoints: [number, number][];
-  elevations: number[] | null;
+  elevations: (number | null)[];
   pointsString: string;
 }

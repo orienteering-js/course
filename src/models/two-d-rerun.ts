@@ -60,6 +60,7 @@ export const twoDRerunTagSchema: z.ZodType<TwoDRerunTag> = z.object({
 export type TwoDRerunCourseExport = {
   tags: TwoDRerunTag[];
   coursecoords: string[];
+  // deno-lint-ignore no-explicit-any
   otechinfo: Record<string, any>;
 };
 

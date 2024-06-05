@@ -37,14 +37,20 @@ export function getLineStringLength(coords: [number, number][]): number {
   }, 0);
 }
 
-export function getTotalPositiveElevation(elevations: number[]): number {
+export function getTotalPositiveElevation(
+  elevations: (number | null)[]
+): number | null {
+  if (elevations.includes(0) || elevations.includes(null)) {
+    return null;
+  }
+
   const length = elevations.length;
   if (length <= 1) return 0;
 
   let positiveElevation = 0;
 
   for (let i = 1; i < length; i++) {
-    const diff = elevations[i] - elevations[i - 1];
+    const diff = elevations[i]! - elevations[i - 1]!;
     if (diff > 0) positiveElevation += diff;
   }
 
