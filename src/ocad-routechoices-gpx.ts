@@ -25,43 +25,11 @@ export function parseGPXRoutechoicesOCADExport(
 
   const clonedLegs = structuredClone(legs) as Leg[];
 
-  const rawRoutechoices: RawRoutechoice[] = Array.from(
-    routechoicesXmlDoc.querySelectorAll("trk")
-  ).map((trk) => {
-    const elevations: (number | null)[] = [];
-    const rawPoints: [number, number][] = [];
-    const trackPoints = trk.querySelectorAll("trkpt");
-
-    for (const trkpt of Array.from(trackPoints)) {
-      const latString = trkpt.getAttribute("lat");
-      const lonString = trkpt.getAttribute("lon");
-
-      if (latString === null || lonString === null)
-        throw new Error("There is no latitude or longitude for this point.");
-
-      const lat = parseFloat(latString);
-      const lon = parseFloat(lonString);
-
-      if (isNaN(lat) || isNaN(lon))
-        throw new Error(
-          "There is a problem with the format of the latitude or the longitude."
-        );
-
-      const elevation = getElevationFromTrkpt(trkpt);
-      elevations.push(elevation);
-
-      rawPoints.push([lat, lon]);
-    }
-
-    const pointsString = rawPoints.flat().join("");
-
-    return {
-      rawPoints,
-      pointsString,
-      elevations,
-    };
-  });
-
+  const trackRawRoutechoices: RawRoutechoice[] =
+    extractRawRoutechoicesFromXmlDocument(routechoicesXmlDoc, "track");
+  const routeRawRoutechoices: RawRoutechoice[] =
+    extractRawRoutechoicesFromXmlDocument(routechoicesXmlDoc, "route");
+  const rawRoutechoices = [...trackRawRoutechoices, ...routeRawRoutechoices];
   const filteredRawRoutechoices: RawRoutechoice[] = [];
 
   // Filtering duplicates
@@ -132,6 +100,50 @@ export function parseGPXRoutechoicesOCADExport(
   });
 
   return clonedLegs;
+}
+
+function extractRawRoutechoicesFromXmlDocument(
+  routechoicesXmlDoc: XMLDocument,
+  mode: "track" | "route"
+): RawRoutechoice[] {
+  return Array.from(
+    routechoicesXmlDoc.querySelectorAll(mode === "track" ? "trk" : "rte")
+  ).map((trk) => {
+    const elevations: (number | null)[] = [];
+    const rawPoints: [number, number][] = [];
+    const trackPoints = trk.querySelectorAll(
+      mode === "track" ? "trkpt" : "rtept"
+    );
+
+    for (const trkpt of Array.from(trackPoints)) {
+      const latString = trkpt.getAttribute("lat");
+      const lonString = trkpt.getAttribute("lon");
+
+      if (latString === null || lonString === null)
+        throw new Error("There is no latitude or longitude for this point.");
+
+      const lat = parseFloat(latString);
+      const lon = parseFloat(lonString);
+
+      if (isNaN(lat) || isNaN(lon))
+        throw new Error(
+          "There is a problem with the format of the latitude or the longitude."
+        );
+
+      const elevation = getElevationFromTrkpt(trkpt);
+      elevations.push(elevation);
+
+      rawPoints.push([lat, lon]);
+    }
+
+    const pointsString = rawPoints.flat().join("");
+
+    return {
+      rawPoints,
+      pointsString,
+      elevations,
+    };
+  });
 }
 
 function getElevationFromTrkpt(trkpt: Element): number | null {
